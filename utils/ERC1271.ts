@@ -1,6 +1,7 @@
 import {
   Address,
   concat,
+  decodeAbiParameters,
   encodeAbiParameters,
   encodeDeployData,
   hashMessage,
@@ -95,3 +96,28 @@ export const replaySafeHash = async (
 
   return safeHash;
 };
+
+export function isERC6492Signature(signature: string) {
+  const ERC6492_DETECTION_SUFFIX = "6492649264926492649264926492649264926492649264926492649264926492";
+  return signature.slice(signature.length - 64, signature.length) == ERC6492_DETECTION_SUFFIX;
+}
+
+export type ParseERC6492ReturnType = {
+  sigToValidate: Hex;
+  factory?: Address;
+  factoryCalldata?: Hex;
+};
+
+export function parseERC6492Signature(signature: Hex): ParseERC6492ReturnType {
+  if (!isERC6492Signature(signature)) return { sigToValidate: signature };
+
+  const [factory, factoryCalldata, sigToValidate] = decodeAbiParameters(
+    [
+      { type: "address" },
+      { type: "bytes" },
+      { type: "bytes" },
+    ],
+    signature,
+  );
+  return { sigToValidate, factory, factoryCalldata };
+}
