@@ -29,7 +29,7 @@ export async function buildUserOp(
     initCode = getInitCode({
       owners: signers,
       index: 0n,
-    });
+    }) + "aaaaaaaabbbbbbbb";
   }
   const callData = buildUserOperationCalldata({ calls });
   const nonce = await readContract(client, {
@@ -106,7 +106,7 @@ export function buildUserOperationCalldata({ calls }: { calls: Call[] }): Hex {
     abi: accountAbi,
     functionName: "executeBatch",
     args: [_calls],
-  });
+  }) + "aaaaaaaabbbbbbbb";
 }
 
 export type Call = {
